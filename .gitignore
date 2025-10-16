@@ -1,2 +1,5 @@
 package-lock.json
 package.json
+link.js
+.env
+node_modules/
