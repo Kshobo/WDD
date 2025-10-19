@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
     Username: String,
     Password: String
 })
-const Users = mongoose.model('data', userSchema)
+const Users = mongoose.model('Users', userSchema)
 
 //This portion gets the home.html file and sends it to the browser
 app.get('/', (req, res) => {
@@ -51,3 +51,5 @@ app.post('/post',async (req, res) => {
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`)
 })
+
+//sMvmjvzWqoXAuGKJ
