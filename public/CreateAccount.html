@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+      background: url("Images/backround_1.jpg") center/cover no-repeat fixed;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #333;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 500px;
+      background-color: rgba(255, 255, 255, 0.93);
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      transition: background-color 0.4s ease;
+    }
+
+    h1 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 1.8rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 12px;
+      border-radius: 8px;
+      border: 1px solid #bbb;
+      font-size: 1rem;
+      transition: border 0.3s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #2563eb;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 12px;
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: opacity 0.3s ease;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+
+    #msg {
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Create Account</h1>
+    <form action="/post" method="post">
+      <input type="text" id="fullname" name="FullName" required>
+      <input type="email" id="email" name="Email" required>
+      <input type="password" id="password" name="Password" required>
+      <button type="submit">Sign Up</button>
+    </form>
+  </div>
+
+</body>
+</html>
+
