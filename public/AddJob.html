@@ -1,23 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Create Account</title>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Job Listing</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       background-image: url("Images/background_1.jpg");
       background-size: cover;
       background-position: center;
-      background-repeat: no-repeat;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -26,8 +18,8 @@
 
     .card {
       width: 90%;
-      max-width: 450px;
-      background-color: rgba(255, 255, 255, 0.92);
+      max-width: 500px;
+      background-color: rgba(255,255,255,0.92);
       padding: 30px;
       border-radius: 12px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.15);
@@ -40,7 +32,7 @@
       color: #2c3e50;
     }
 
-    input {
+    input, textarea, select {
       width: 100%;
       padding: 12px;
       margin-top: 12px;
@@ -49,9 +41,8 @@
       font-size: 1rem;
     }
 
-    input:focus {
-      border-color: #2563eb;
-      outline: none;
+    textarea {
+      resize: vertical;
     }
 
     button {
@@ -69,32 +60,25 @@
     button:hover {
       opacity: 0.9;
     }
-
-    a {
-      display: block;
-      margin-top: 15px;
-      color: #2563eb;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
   </style>
 </head>
-
 <body>
   <div class="card">
-    <h1>Create Account</h1>
-
-    <form action="/post" method="POST">
-      <input type="text" name="FullName" placeholder="Full Name" required>
-      <input type="email" name="Email" placeholder="Email" required>
-      <input type="password" name="Password" placeholder="Password" required>
-      <button type="submit">Sign Up</button>
+    <h1>Add Job Listing</h1>
+    <form action="/api/jobs/create" method="POST">
+      <input type="text" name="title" placeholder="Job Title" required>
+      <input type="text" name="company" placeholder="Company Name" required>
+      <input type="text" name="location" placeholder="Location">
+      <select name="type">
+        <option value="">Select Job Type</option>
+        <option value="Full-time">Full-time</option>
+        <option value="Part-time">Part-time</option>
+        <option value="Internship">Internship</option>
+      </select>
+      <input type="number" name="salary" placeholder="Salary">
+      <textarea name="description" placeholder="Job Description" rows="5"></textarea>
+      <button type="submit">Add Job</button>
     </form>
-
-    <a href="/login">Already have an account?</a>
   </div>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Create Account</title>
+  <title>Login</title>
 
   <style>
     * {
@@ -85,16 +85,15 @@
 
 <body>
   <div class="card">
-    <h1>Create Account</h1>
+    <h1>Login</h1>
 
-    <form action="/post" method="POST">
-      <input type="text" name="FullName" placeholder="Full Name" required>
+    <form action="/login" method="POST">
       <input type="email" name="Email" placeholder="Email" required>
       <input type="password" name="Password" placeholder="Password" required>
-      <button type="submit">Sign Up</button>
+      <button type="submit">Login</button>
     </form>
 
-    <a href="/login">Already have an account?</a>
+    <a href="/signup">Create Account</a>
   </div>
 </body>
 </html>

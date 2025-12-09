@@ -178,6 +178,10 @@
     <header>
       <h1>Internship Tracker</h1>
       <button id="dark-mode-toggle">🌙 Dark Mode</button>
+      <button id="login-btn" onclick="window.location.href='/login.html'">LOG IN</button>
+      <button onclick="window.location.href='/jobs'" style="padding: 10px 20px; font-size: 18px;">🔍 Search Jobs</button>
+
+
     </header>
 
     <!-- Dashboard Overview -->
@@ -207,22 +211,22 @@
     <section>
       <h2>Kanban Board (Application Progress)</h2>
       <div class="kanban">
-        <a href="applied.html" class="kanban-column">
+        <a href="applied" class="kanban-column">
           <h4>Applied</h4>
           <div class="placeholder">View all companies you've applied to</div>
         </a>
 
-        <a href="interview.html" class="kanban-column">
+        <a href="interview" class="kanban-column">
           <h4>Interview</h4>
           <div class="placeholder">View all upcoming or past interviews</div>
         </a>
 
-        <a href="offer.html" class="kanban-column">
+        <a href="offer" class="kanban-column">
           <h4>Offer</h4>
           <div class="placeholder">View offers and accepted positions</div>
         </a>
 
-        <a href="rejected.html" class="kanban-column">
+        <a href="rejected" class="kanban-column">
           <h4>Rejected</h4>
           <div class="placeholder">View declined or rejected applications</div>
         </a>
@@ -246,7 +250,7 @@
     </section>
 
     <section>
-      <h2>Notes (Coming Soon)</h2>
+      <a href="notes.html"><h2>Notes (Coming Soon)</h2></a>
       <p>Keep track of interview notes, recruiter names, and feedback.</p>
     </section>
   </div>

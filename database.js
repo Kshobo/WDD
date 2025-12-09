@@ -24,12 +24,27 @@ app.use(session({
 app.use(express.json());
 
 
+// Creating the User schema for the database
 const userSchema = new mongoose.Schema({
     FullName: String,
     Email: String,
     Password: String
 })
 const Users = mongoose.model('Users', userSchema)
+
+
+// Creating the Job schema for the database
+const jobSchema = new mongoose.Schema({
+    title: String,
+    company: String,
+    location: String,
+    type: String,          // e.g. "Full-time", "Part-time", "Internship"
+    salary: Number,
+    description: String,
+    postedAt: { type: Date, default: Date.now }
+});
+const Jobs = mongoose.model('Jobs', jobSchema);
+
 
 //This portion gets the InternshipTrackerMainPage.html file and sends it to the browser
 app.get('/', (req, res) => {
@@ -72,6 +87,39 @@ app.get('/profile', async (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'profile.html'));
 
 });
+
+app.get('/Offer', (req, res) => {
+    if (!req.session.userId) {
+        return res.redirect('/signup'); // or '/login' if you have one
+    }
+    res.sendFile(path.join(__dirname, 'public', 'offer.html'));
+});
+
+app.get('/Rejected', (req, res) => {
+    if (!req.session.userId) {
+        return res.redirect('/signup'); // or '/login' if you have one
+    }
+    res.sendFile(path.join(__dirname, 'public', 'rejected.html'));
+});
+
+app.get('/Interview', (req, res) => {
+    if (!req.session.userId) {
+        return res.redirect('/signup'); // or '/login' if you have one
+    }
+    res.sendFile(path.join(__dirname, 'public', 'interview.html'));
+});
+
+app.get('/Applied', (req, res) => {
+    if (!req.session.userId) {
+        return res.redirect('/signup'); // or '/login' if you have one
+    }
+    res.sendFile(path.join(__dirname, 'public', 'applied.html'));
+});
+
+app.get('/Notes', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'notes.html'));
+})
+
 
 app.get('/api/profile', async (req, res) => {
     if (!req.session.userId) return res.status(401).json({ error: "Unauthorized" });
@@ -116,10 +164,162 @@ app.get('/signup', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'CreateAccount.html'));
 });
 
+app.post('/login', async (req, res) => {
+    const { Email, Password } = req.body;
+
+    // Check if user exists
+    const user = await Users.findOne({ Email });
+    if (!user) {
+        return res.status(400).send("User not found");
+    }
+
+    // Compare password
+    const validPass = await bcrypt.compare(Password, user.Password);
+    if (!validPass) {
+        return res.status(400).send("Incorrect password");
+    }
+
+    // Save session
+    req.session.userId = user._id;
+
+    // Redirect to profile
+    res.redirect('/profile');
+});
+
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'Login.html'));
+});
+
+
 
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`)
 })
 
-//sMvmjvzWqoXAuGKJ
+let publicNotes = [];
+
+app.post('/add-note', (req, res) => {
+    const note = req.body.note;
+    publicNotes.push(note);
+    res.json({ success: true });
+});
+
+app.get('/get-notes', (req, res) => {
+    res.json(publicNotes);
+});
+
+
+
+
+
+// ---------------------------- Applied Page Section ----------------------------
+
+
+
+
+app.get('/api/applications', async (req, res) => {
+  if (!req.session.userId) {
+    return res.status(401).json({ error: "You must be logged in." });
+  }
+
+  try {
+    // Find all applications by this user and populate job details
+    const applications = await Applications.find({ userId: req.session.userId })
+      .populate('jobId')  // fetch job details
+      .sort({ appliedAt: -1 });
+
+    res.json(applications);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch applications" });
+  }
+});
+
+
+
+
+
+// ---------------------------- Job Listings Section ----------------------------
+
+
+
+
+app.get('/jobs', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'jobs.html'));
+});
+
+// Getting the job listings based on search criteria
+
+const applicationSchema = new mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "Users" },
+    jobId: { type: mongoose.Schema.Types.ObjectId, ref: "Jobs" },
+    appliedAt: { type: Date, default: Date.now }
+});
+const Applications = mongoose.model('Applications', applicationSchema);
+
+
+app.get('/api/jobs/search', async (req, res) => {
+    const { title, company, location, type, minSalary, maxSalary } = req.query;
+
+    let query = {};
+
+    if (title) query.title = { $regex: title, $options: "i" };
+    if (company) query.company = { $regex: company, $options: "i" };
+    if (location) query.location = { $regex: location, $options: "i" };
+    if (type) query.type = type;
+    if (minSalary || maxSalary) query.salary = {};
+
+    if (minSalary) query.salary.$gte = Number(minSalary);
+    if (maxSalary) query.salary.$lte = Number(maxSalary);
+
+    const jobs = await Jobs.find(query);
+    res.json(jobs);
+});
+
+
+
+app.post('/api/jobs/apply/:jobId', async (req, res) => {
+    if (!req.session.userId) {
+        return res.status(401).json({ error: "You must be logged in." });
+    }
+
+    const jobId = req.params.jobId;
+
+    // Prevent duplicate applications
+    const exists = await Applications.findOne({
+        userId: req.session.userId,
+        jobId
+    });
+
+    if (exists) {
+        return res.json({ message: "Already applied" });
+    }
+
+    const application = new Applications({
+        userId: req.session.userId,
+        jobId
+    });
+
+    await application.save();
+    res.json({ success: true, application });
+});
+
+// Creating a new job listing in the database
+app.post('/api/jobs/create', async (req, res) => {
+    const job = new Jobs({
+        title: req.body.title,
+        company: req.body.company,
+        location: req.body.location,
+        type: req.body.type,
+        salary: req.body.salary,
+        description: req.body.description
+    });
+
+    await job.save();
+    res.json({ success: true });
+});
+
+
+// This code is responsible for logging in the user to an already created account 
+
