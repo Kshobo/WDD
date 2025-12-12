@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Applied Applications</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f7fb;
+      color: #333;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      background-color: #2563eb;
+      color: white;
+    }
+
+    .topbar a {
+      color: white;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .topbar a:hover {
+      text-decoration: underline;
+    }
+
+    .wrapper {
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 25px 30px;
+      background-color: rgba(255,255,255,0.95);
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #2563eb;
+      margin-bottom: 25px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 10px;
+    }
+
+    th, td {
+      padding: 12px 20px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #3b82f6;
+      color: #fff;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.95rem;
+      border-radius: 8px;
+    }
+
+    tbody tr {
+      background-color: #f4f7fb;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    tbody tr:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    }
+
+    @media (max-width: 768px) {
+      table, thead, tbody, th, td, tr { display: block; }
+      thead tr { display: none; }
+      tbody tr { margin-bottom: 15px; }
+      td {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+      }
+      td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        flex-basis: 45%;
+        color: #555;
+      }
+      tbody tr { box-shadow: none; transform: none; }
+      tbody tr:hover { transform: none; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <h2>Internship Tracker</h2>
+    <div>
+      <a href="InternshipTrackerMainPage.html">Dashboard</a>
+      <a href="profile.html">Profile</a>
+    </div>
+  </div>
+
+  <div class="wrapper">
+    <h1>Applied Applications</h1>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Company Name</th>
+          <th>Position</th>
+          <th>Date Applied</th>
+          <th>Status</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody id="applied-list">
+        <!-- Applied applications will populate here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    async function loadApplied() {
+      const res = await fetch("/api/applications"); // fetch user's applied applications
+      const applications = await res.json();
+      const tbody = document.getElementById("applied-list");
+      tbody.innerHTML = "";
+
+      if (!applications.length) {
+        tbody.innerHTML = "<tr><td colspan='5'>No applications yet.</td></tr>";
+        return;
+      }
+
+      applications.forEach(app => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td data-label="Company Name">${app.jobId?.company || "-"}</td>
+          <td data-label="Position">${app.jobId?.title || "-"}</td>
+          <td data-label="Date Applied">${app.appliedAt ? new Date(app.appliedAt).toLocaleDateString() : "-"}</td>
+          <td data-label="Status">${app.status || "Pending"}</td>
+          <td data-label="Notes">${app.notes || "-"}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    loadApplied();
+  </script>
+
+</body>
+</html>

@@ -180,5 +180,109 @@ app.get('/api/jobs/external', async (req, res) => {
     }
 });
 
+// ------------------------- IMPORTS (ADDITIONAL) -------------------------
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const OpenAI = require("openai");
+
+// ------------------------- MIDDLEWARE (ADDITIONAL) -------------------------
+app.use(bodyParser.json());
+app.use(cors());
+
+// OpenAI client
+const client = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY || "YOUR_OPENAI_KEY"
+});
+
+// ---- Chatbot ----
+app.post("/chat", async (req, res) => {
+    try {
+        const userMessage = req.body.message;
+
+        const completion = await client.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [
+                {
+                    role: "system",
+                    content:
+                        "You are the AI assistant for an internship/job tracker website. Help users understand how to add jobs, track applications, use the dashboard, and how APIs work."
+                },
+                { role: "user", content: userMessage }
+            ]
+        });
+
+        res.json({ reply: completion.choices[0].message.content });
+
+    } catch (err) {
+        console.error(err);
+        res.json({ reply: "Error: unable to generate response." });
+    }
+});
+
 // ------------------------- START SERVER -------------------------
 app.listen(port, () => console.log(`Server running at http://localhost:${port}`));
+
+// ------------------------- Notifications -------------------------
+const notificationSchema = new mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "Users" },
+    message: String,
+    date: { type: Date, default: Date.now },
+    read: { type: Boolean, default: false }
+});
+const Notifications = mongoose.model("Notifications", notificationSchema);
+
+// Get latest notifications for logged-in user
+app.get('/api/notifications', async (req, res) => {
+    if (!req.session.userId) return res.status(401).json({ error: "Unauthorized" });
+
+    try {
+        const notifications = await Notifications.find({ userId: req.session.userId })
+            .sort({ date: -1 })
+            .limit(10)
+            .lean();
+
+        res.json(notifications);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to fetch notifications" });
+    }
+});
+
+// Mark notification as read
+app.post('/api/notifications/read/:id', async (req, res) => {
+    if (!req.session.userId) return res.status(401).json({ error: "Unauthorized" });
+
+    try {
+        await Notifications.findByIdAndUpdate(req.params.id, { read: true });
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to mark notification as read" });
+    }
+});
+
+// Helper to create a notification
+async function createNotification(userId, message) {
+    const notif = new Notifications({ userId, message });
+    await notif.save();
+}
+
+// Example: Generate notification when a new job is created
+app.post('/api/jobs/create', async (req, res) => {
+    try {
+        const { title, company, location, type, salary, description } = req.body;
+        const job = new Jobs({ title, company, location, type, salary, description });
+        await job.save();
+
+        // Notify all users about the new job
+        const allUsers = await Users.find({});
+        for (const user of allUsers) {
+            await createNotification(user._id, `New job posted: ${title} at ${company}`);
+        }
+
+        res.json({ success: true, job });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: "Failed to create job" });
+    }
+});

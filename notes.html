@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notes</title>
+
+  <style>
+    /* Global Reset */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-image: url("Images/background_1.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      flex-direction: column;
+      color: #333;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .wrapper {
+      width: 90%;
+      max-width: 900px;
+      background-color: rgba(255, 255, 255, 0.92);
+      border-radius: 12px;
+      padding: 25px 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+      padding-bottom: 10px;
+      position: relative;
+    }
+
+    header h1 {
+      font-size: 2.3rem;
+      color: #2c3e50;
+      letter-spacing: 1px;
+    }
+
+    #dark-mode-toggle {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background-color: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    #dark-mode-toggle:hover {
+      background-color: #1a252f;
+    }
+
+    /* Notes Section */
+    h2 {
+      margin-bottom: 10px;
+      color: #2c3e50;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 5px;
+    }
+
+    #note-input {
+      width: 100%;
+      height: 120px;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 12px;
+      resize: none;
+      font-size: 1rem;
+    }
+
+    #add-note-btn {
+      background-color: #2c3e50;
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      width: 100%;
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+
+    #add-note-btn:hover {
+      background-color: #1a252f;
+    }
+
+    .note-card {
+      background-color: #f4f7fb;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+      word-wrap: break-word;
+      transition: 0.3s;
+    }
+
+    .note-card:hover {
+      transform: translateY(-3px);
+      background-color: #e8eef8;
+    }
+
+    .delete-btn {
+      background: #d9534f;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+      font-size: 0.9rem;
+      transition: 0.3s;
+    }
+
+    .delete-btn:hover {
+      background: #b52b27;
+    }
+
+    /* Dark Mode */
+    body.dark-mode {
+      background-color: #121212;
+      color: #f5f5f5;
+    }
+
+    body.dark-mode .wrapper {
+      background-color: rgba(30,30,30,0.95);
+    }
+
+    body.dark-mode header h1 { color: #fff; }
+    body.dark-mode h2 { color: #fff; border-color: #666; }
+    body.dark-mode .note-card { background-color: #2a2a2a; }
+    body.dark-mode .note-card:hover { background-color: #323232; }
+    body.dark-mode #note-input { background-color: #1e1e1e; color: white; border-color: #555; }
+
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    <header>
+      <h1>Notes</h1>
+      <button id="dark-mode-toggle">🌙 Dark Mode</button>
+    </header>
+
+    <section>
+      <h2>Add a Note</h2>
+
+      <textarea id="note-input" placeholder="Write something..."></textarea>
+      <button id="add-note-btn">Add Note</button>
+
+      <h2>Your Notes</h2>
+      <div id="notes-container"></div>
+    </section>
+  </div>
+
+  <script>
+    // Dark Mode
+    const toggleBtn = document.getElementById("dark-mode-toggle");
+    toggleBtn.addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+      toggleBtn.textContent = document.body.classList.contains("dark-mode")
+        ? "☀️ Light Mode"
+        : "🌙 Dark Mode";
+    });
+
+    // Notes Logic (LocalStorage)
+    const noteInput = document.getElementById("note-input");
+    const notesContainer = document.getElementById("notes-container");
+    const addBtn = document.getElementById("add-note-btn");
+
+    function loadNotes() {
+      const notes = JSON.parse(localStorage.getItem("notes")) || [];
+      notesContainer.innerHTML = "";
+
+      notes.forEach((note, index) => {
+        const card = document.createElement("div");
+        card.className = "note-card";
+        card.innerHTML = `
+          <p>${note}</p>
+          <button class="delete-btn" onclick="deleteNote(${index})">Delete</button>
+        `;
+        notesContainer.appendChild(card);
+      });
+    }
+
+    function addNote() {
+      const text = noteInput.value.trim();
+      if (text === "") return;
+
+      const notes = JSON.parse(localStorage.getItem("notes")) || [];
+      notes.push(text);
+      localStorage.setItem("notes", JSON.stringify(notes));
+
+      noteInput.value = "";
+      loadNotes();
+    }
+
+    function deleteNote(index) {
+      const notes = JSON.parse(localStorage.getItem("notes")) || [];
+      notes.splice(index, 1);
+      localStorage.setItem("notes", JSON.stringify(notes));
+      loadNotes();
+    }
+
+    addBtn.addEventListener("click", addNote);
+
+    loadNotes();
+  </script>
+</body>
+</html>
