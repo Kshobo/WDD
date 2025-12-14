@@ -47,6 +47,7 @@
       border-radius: 8px;
       border: 1px solid #ccc;
       font-size: 1rem;
+      transition: border 0.3s ease;
     }
 
     input:focus {
@@ -64,26 +65,79 @@
       border: none;
       border-radius: 10px;
       cursor: pointer;
+      transition: opacity 0.3s ease;
     }
 
     button:hover {
       opacity: 0.9;
     }
 
-    a {
-      display: block;
+    .links {
       margin-top: 15px;
-      color: #2563eb;
-      text-decoration: none;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.95rem;
     }
 
-    a:hover {
+    .links a {
+      color: #2563eb;
+      text-decoration: none;
+      transition: text-decoration 0.2s ease;
+    }
+
+    .logo{
+      position: absolute;       /* allows manual positioning */
+      top: 4px;                /* pixels from the top of the topbar */
+      left: 30px;               /* pixels from the left of the topbar */
+      height: 40px;             /* logo height */
+      width: auto; 
+    }
+
+    /* When window shrinks */
+    @media (max-width: 800px) {
+      .logo {
+        position: absolute;
+        top: -5px;
+        left: 50vw;       /* 50% of viewport width */
+        transform: translateX(-50%); 
+        height: 110px;
+        width: auto;
+      }
+
+      .logo img {
+        height: 100px;            /* smaller logo */
+        width: auto;
+      }
+
+      .card {
+        max-width: 90%;           /* make form narrower on shrink */
+        padding: 25px 20px;
+      }
+    }
+
+
+    .links a:hover {
       text-decoration: underline;
+    }
+
+    /* Optional: small footer note */
+    .footer-note {
+      margin-top: 20px;
+      font-size: 0.85rem;
+      color: #555;
+    }
+
+    body {
+      background: url("/backimg.jpg") center/cover no-repeat fixed;
     }
   </style>
 </head>
 
 <body>
+
+    <div class="logo">
+      <a href="/InternshipTrackerMainPage.html"><img src="/logo1.png" alt="Logo" style="height:130px; "></a>
+    </div>
   <div class="card">
     <h1>Login</h1>
 
@@ -93,7 +147,13 @@
       <button type="submit">Login</button>
     </form>
 
-    <a href="/signup">Create Account</a>
+    <div class="links">
+      <a href="/signup">Create Account</a>
+    </div>
+
+    <div class="footer-note">
+      By logging in, you agree to our Terms & Privacy.
+    </div>
   </div>
 </body>
 </html>

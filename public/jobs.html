@@ -116,7 +116,6 @@
       align-items: center;
     }
   }
-
 </style>
 </head>
 <body>
@@ -131,6 +130,17 @@
       <option value="Full-time">Full-time</option>
       <option value="Part-time">Part-time</option>
     </select>
+
+    <select id="search-salary">
+      <option value="">Any Salary</option>
+      <option value="0-20000">€0 - €20,000</option>
+      <option value="20001-25000">€20,001 - €25,000</option>
+      <option value="25001-30000">€25,001 - €30,000</option>
+      <option value="30001-40000">€30,001 - €40,000</option>
+      <option value="40001-60000">€40,001 - €60,000</option>
+      <option value="60000">€60,001+</option>
+    </select>
+
     <button onclick="searchJobs()">Search</button>
   </div>
 
@@ -141,10 +151,18 @@
   async function searchJobs() {
     const title = document.getElementById("search-title").value;
     const type = document.getElementById("search-type").value;
+    const salaryRange = document.getElementById("search-salary").value;
 
     let url = `/api/jobs/search?`;
     if (title) url += `title=${encodeURIComponent(title)}&`;
     if (type) url += `type=${encodeURIComponent(type)}&`;
+
+    // Convert salary range to minSalary and maxSalary
+    if (salaryRange) {
+      const [min, max] = salaryRange.split('-');
+      if (min) url += `minSalary=${min}&`;
+      if (max) url += `maxSalary=${max}&`;
+    }
 
     const res = await fetch(url);
     const jobs = await res.json();

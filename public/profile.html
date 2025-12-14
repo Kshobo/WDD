@@ -1,216 +1,271 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Roboto, Arial, sans-serif;
-      background: url("Images/backround_1.jpg") center/cover no-repeat fixed;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      color: #333;
-      transition: background-color 0.4s ease, color 0.4s ease;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile - Internship Tracker</title>
 
-    .wrapper {
-      width: 90%;
-      max-width: 900px;
-      background-color: rgba(255, 255, 255, 0.92);
-      border-radius: 16px;
-      padding: 20px 30px 40px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-    }
+<style>
+/* ===== BASE ===== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  background: linear-gradient(180deg, #eef2f7, #f8fafc);
+  color: #1f2937;
+  transition: background 0.3s, color 0.3s;
+}
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: linear-gradient(135deg, #3b82f6, #2563eb);
-      color: white;
-      padding: 20px 30px;
-      border-radius: 12px;
-      margin-bottom: 25px;
-    }
+/* ===== TOPBAR ===== */
+.topbar {
+  height: 64px;
+  background: rgba(37, 99, 235, 0.95);
+  backdrop-filter: blur(8px);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
 
-    .nav-buttons button {
-      background: rgba(255,255,255,0.15);
-      border: none;
-      color: white;
-      padding: 8px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
-    main {
-      display: flex;
-      justify-content: center;
-    }
+.topbar-left img {
+  height: 60px;
+  width: auto;
+}
 
-    .profile-card {
-      width: 100%;
-      background: white;
-      padding: 25px;
-      border-radius: 12px;
-      text-align: center;
-      border: 1px solid #ddd;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
+.topbar-left .topbar-title {
+  font-weight: 600;
+  font-size: 1.2rem;
+  letter-spacing: 0.5px;
+}
 
-    .profile-card input {
-      width: 100%;
-      max-width: 350px;
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      font-size: 1rem;
-    }
+.topbar-actions button {
+  background: white;
+  color: #2563eb;
+  border: none;
+  padding: 7px 12px;
+  border-radius: 999px;
+  margin-left: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
 
-    .save-btn {
-      margin-top: 20px;
-      padding: 10px 16px;
-      border: none;
-      border-radius: 8px;
-      background: #3b82f6;
-      color: white;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    .save-btn:hover {
-      background: #2563eb;
-    }
+.topbar-actions button:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
 
-    .logout-btn {
-      margin-top: 10px;
-      padding: 10px 16px;
-      background: #ef4444;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      cursor: pointer;
-    }
+/* ===== SIDEBAR ===== */
+.sidebar {
+  position: fixed;
+  top: 64px;
+  left: -100%;
+  width: 230px;
+  height: calc(100% - 64px);
+  background: linear-gradient(180deg, #1e3a8a, #1e40af);
+  padding-top: 12px;
+  transition: left 0.3s ease;
+  z-index: 900;
+}
 
-    .delete-btn {
-      margin-top: 10px;
-      padding: 10px 16px;
-      background: #f87171;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      cursor: pointer;
-    }
-    .delete-btn:hover {
-      background: #dc2626;
-    }
+.sidebar.show { left: 0; }
 
-    /* DARK MODE */
-    body.dark-mode {
-      background-color: #121212;
-      color: white;
-    }
-    body.dark-mode .wrapper {
-      background: rgba(30,30,30,0.95);
-    }
-    body.dark-mode .profile-card {
-      background: #1f1f1f;
-      border-color: #333;
-    }
-    body.dark-mode input {
-      background: #2a2a2a;
-      color: white;
-      border-color: #444;
-    }
-  </style>
+.sidebar a {
+  display: block;
+  padding: 14px 20px;
+  color: #e5e7eb;
+  text-decoration: none;
+  font-size: 15px;
+  transition: background 0.2s;
+}
+
+.sidebar a:hover { background: rgba(255,255,255,0.12); }
+
+/* ===== CONTENT ===== */
+.content {
+  padding: 22px;
+  margin-top: 20px;
+}
+
+h1 { font-size: 26px; margin-bottom: 12px; color: #2563eb; }
+
+/* ===== PROFILE CARD ===== */
+.profile-card {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 25px;
+  max-width: 500px;
+  margin: 0 auto;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.profile-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+}
+
+.profile-card label { display: block; margin-top: 12px; font-weight: 500; }
+.profile-card input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-top: 4px;
+  font-size: 1rem;
+}
+
+.profile-card button {
+  margin-top: 15px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.save-btn { background: #3b82f6; color: white; }
+.save-btn:hover { background: #2563eb; }
+
+.logout-btn { background: #ef4444; color: white; }
+.logout-btn:hover { background: #dc2626; }
+
+.delete-btn { background: #f87171; color: white; }
+.delete-btn:hover { background: #dc2626; }
+
+/* ===== MEDIA QUERIES ===== */
+@media (min-width: 768px) {
+  .sidebar { top: 64px; left: 0; height: calc(100% - 64px); }
+  .content { margin-left: 230px; padding: 32px; }
+}
+
+/* ===== DARK MODE ===== */
+body.dark {
+  background: linear-gradient(180deg, #0f172a, #020617);
+  color: #e5e7eb;
+}
+
+body.dark .profile-card {
+  background: rgba(30,41,59,0.9);
+  border-color: #333;
+}
+
+body.dark input {
+  background: #1f2937;
+  color: #e5e7eb;
+  border-color: #444;
+}
+
+body.dark .topbar { background: rgba(30,30,30,0.95); }
+body.dark .topbar-actions button { background: #2563eb; color: white; }
+
+</style>
 </head>
 <body>
-  <div class="wrapper">
-    <header>
-      <h1>Profile</h1>
-      <div class="nav-buttons">
-        <button onclick="document.location.href='/'">Dashboard</button>
-        <button onclick="document.location.href='/profile'">Profile</button>
-        <button id="darkModeBtn">Dark Mode</button>
-      </div>
-    </header>
 
-    <main>
-      <div class="profile-card">
-        <h2>Edit Profile</h2>
-
-        <label>Full Name</label><br>
-        <input id="name" type="text">
-
-        <br><br>
-
-        <label>Email</label><br>
-        <input id="email" type="email">
-
-        <br>
-
-        <button class="save-btn" onclick="saveProfile()">Save Changes</button>
-        <button class="logout-btn" onclick="document.location.href='/logout'">Logout</button>
-        <button class="delete-btn" onclick="deleteAccount()">Delete Account</button>
-      </div>
-    </main>
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    <img src="/logo1.png" alt="Logo">
   </div>
+  <div class="topbar-actions">
+    <button onclick="location.href='/'">Dashboard</button>
+    <button onclick="location.href='/jobs'">Jobs</button>
+    <button id="darkToggle">🌙</button>
+  </div>
+</div>
 
-  <script>
-    // Load profile data
-    fetch("/api/profile")
-      .then(res => res.json())
-      .then(user => {
-        document.getElementById("name").value = user.FullName;
-        document.getElementById("email").value = user.Email;
-      });
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <a href="/">Dashboard</a>
+  <a href="/profile">Profile</a>
+  <a href="/addjob.html">Add Job</a>
+  <a href="/jobs">Job Listings</a>
+  <a href="/applied">Applied Jobs</a>
+  <a href="/interview">Interviews</a>
+  <a href="/offer">Offers</a>
+  <a href="/rejected">Rejected</a>
+  <a href="/notes">Notes</a>
+  <a href="/chatbot.html">AI Chatbot</a>
+</div>
 
-    // Save profile changes
-    function saveProfile() {
-      const updated = {
-        FullName: document.getElementById("name").value,
-        Email: document.getElementById("email").value,
-      };
+<!-- CONTENT -->
+<div class="content">
+  <h1>Profile</h1>
 
-      fetch("/api/profile/update", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updated)
-      })
-      .then(res => res.json())
-      .then(data => {
-        if(data.success) alert("Profile updated successfully!");
-        else alert("Error updating profile");
-      })
-      .catch(err => alert("Error updating profile"));
-    }
+  <div class="profile-card">
+    <label>Full Name</label>
+    <input id="name" type="text">
 
-    // Delete account
-    function deleteAccount() {
-      if (!confirm("Are you sure you want to delete your account? This cannot be undone.")) return;
+    <label>Email</label>
+    <input id="email" type="email">
 
-      fetch("/api/profile/delete", { method: "DELETE" })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            alert("Your account has been deleted.");
-            window.location.href = "/signup";
-          } else {
-            alert("Error deleting account.");
-          }
-        })
-        .catch(err => alert("Error deleting account."));
-    }
+    <button class="save-btn" onclick="saveProfile()">Save Changes</button>
+    <button class="logout-btn" onclick="location.href='/logout'">Logout</button>
+    <button class="delete-btn" onclick="deleteAccount()">Delete Account</button>
+  </div>
+</div>
 
-    // Dark mode
-    const darkModeBtn = document.getElementById("darkModeBtn");
-    darkModeBtn.addEventListener("click", () => {
-      document.body.classList.toggle("dark-mode");
-      darkModeBtn.textContent = document.body.classList.contains("dark-mode") ? "Light Mode" : "Dark Mode";
-    });
-  </script>
+<script>
+function toggleMenu() {
+  document.getElementById("sidebar").classList.toggle("show");
+}
+
+// Dark Mode
+document.getElementById("darkToggle").onclick = () => {
+  document.body.classList.toggle("dark");
+};
+
+// Load profile
+fetch("/api/profile")
+.then(res => res.json())
+.then(user => {
+  document.getElementById("name").value = user.FullName;
+  document.getElementById("email").value = user.Email;
+});
+
+// Save profile
+function saveProfile() {
+  const updated = {
+    FullName: document.getElementById("name").value,
+    Email: document.getElementById("email").value
+  };
+  fetch("/api/profile/update", {
+    method: "PUT",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify(updated)
+  })
+  .then(res=>res.json())
+  .then(data => {
+    if(data.success) alert("Profile updated!");
+    else alert("Error updating profile");
+  }).catch(()=>alert("Error updating profile"));
+}
+
+// Delete account
+function deleteAccount() {
+  if(!confirm("Delete your account? This cannot be undone.")) return;
+  fetch("/api/profile/delete", {method: "DELETE"})
+    .then(res=>res.json())
+    .then(data => {
+      if(data.success) window.location.href="/signup";
+      else alert("Error deleting account.");
+    }).catch(()=>alert("Error deleting account"));
+}
+</script>
+
 </body>
 </html>

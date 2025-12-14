@@ -1,270 +1,273 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Internship Tracker</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Internship Dashboard</title>
 
-  <style>
-    /* ===== Global Reset ===== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<style>
+/* ===== BASE ===== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-    body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background-image: url("Images/background_1.jpg"); /* ✅ Use relative path */
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      color: #333;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      flex-direction: column;
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
+body {
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(180deg, #eef2f7, #f8fafc);
+  color: #1f2937;
+}
 
-    .wrapper {
-      width: 90%;
-      max-width: 1200px;
-      background-color: rgba(255, 255, 255, 0.92);
-      border-radius: 12px;
-      padding: 20px 30px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-    }
+/* ===== TOP BAR ===== */
+.topbar {
+  height: 64px;
+  background: rgba(37, 99, 235, 0.95);
+  backdrop-filter: blur(8px);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  position: sticky;
+  top: 0;
+  z-index: 3000;
+}
 
-    /* ===== Header ===== */
-    header {
-      text-align: center;
-      margin-bottom: 30px;
-      border-bottom: 2px solid #e0e0e0;
-      padding-bottom: 10px;
-      position: relative;
-    }
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
-    header h1 {
-      font-size: 2.4rem;
-      font-weight: 600;
-      color: #2c3e50;
-      letter-spacing: 1px;
-    }
+.topbar img {
+  height: 50px;
+}
 
-    /* Dark Mode Toggle */
-    #dark-mode-toggle {
-      position: absolute;
-      top: 0;
-      right: 0;
-      background-color: #2c3e50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      padding: 8px 12px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
+.menu-btn {
+  font-size: 24px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
 
-    #dark-mode-toggle:hover {
-      background-color: #1a252f;
-    }
+.topbar-actions button {
+  background: white;
+  color: #2563eb;
+  border: none;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+  margin-left: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
 
-    /* ===== Sections ===== */
-    section {
-      margin-bottom: 30px;
-    }
+.topbar-actions button:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
 
-    h2 {
-      color: #2c3e50;
-      margin-bottom: 10px;
-      border-bottom: 2px solid #ccc;
-      padding-bottom: 5px;
-    }
+/* ===== SIDEBAR ===== */
+.sidebar {
+  position: fixed;
+  top: 64px;
+  left: -100%;
+  width: 230px;
+  height: calc(100% - 64px);
+  background: linear-gradient(180deg, #1e3a8a, #1e40af);
+  transition: left 0.3s ease;
+  padding-top: 12px;
+  z-index: 2000; /* <-- Add this */
 
-    /* ===== Dashboard Overview ===== */
-    .dashboard {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-    }
+}
 
-    .dashboard-card {
-      background-color: #f4f7fb;
-      border-radius: 10px;
-      padding: 20px;
-      width: 200px;
-      text-align: center;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.08);
-      transition: all 0.3s ease;
-    }
+.sidebar.show {
+  left: 0;
+}
 
-    .dashboard-card:hover {
-      transform: translateY(-5px);
-      background-color: #e8eef8;
-    }
+.sidebar a {
+  display: block;
+  padding: 14px 20px;
+  color: #e5e7eb;
+  text-decoration: none;
+  font-size: 15px;
+  transition: background 0.2s;
+}
 
-    /* ===== Kanban Board ===== */
-    .kanban {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
+.sidebar a:hover {
+  background: rgba(255,255,255,0.12);
+}
 
-    .kanban a {
-      text-decoration: none;
-      color: inherit;
-    }
+/* ===== CONTENT ===== */
+.content {
+  padding: 22px;
+  z-index: 1;
 
-    .kanban-column {
-      flex: 1;
-      min-width: 220px;
-      background-color: #f1f3f6;
-      padding: 1.2rem;
-      border-radius: 10px;
-      text-align: center;
-      transition: all 0.3s ease;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.08);
-      cursor: pointer;
-    }
+}
 
-    .kanban-column:hover {
-      transform: translateY(-5px);
-      background-color: #e3e9f5;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
-    }
+h1 {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
 
-    /* ===== Dark Mode ===== */
-    body.dark-mode {
-      background-color: #121212;
-      color: #f5f5f5;
-    }
+.subtitle {
+  color: #6b7280;
+  margin-bottom: 24px;
+}
 
-    body.dark-mode .wrapper {
-      background-color: rgba(30, 30, 30, 0.95);
-      color: #f5f5f5;
-    }
+/* ===== GRID ===== */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
 
-    body.dark-mode header h1 {
-      color: #fff;
-    }
+/* ===== CARD ===== */
+.card {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  transition: transform 0.25s, box-shadow 0.25s;
+  z-index: 1;
 
-    body.dark-mode .dashboard-card {
-      background-color: #2a2a2a;
-    }
+}
 
-    body.dark-mode .kanban-column {
-      background-color: #2a2a2a;
-    }
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+}
 
-    body.dark-mode .kanban-column:hover {
-      background-color: #323232;
-    }
+.card h3 {
+  color: #2563eb;
+  margin-bottom: 6px;
+  font-size: 18px;
+}
 
-    @media (max-width: 768px) {
-      .dashboard, .kanban {
-        flex-direction: column;
-        align-items: center;
-      }
-    }
+.card p {
+  color: #4b5563;
+  font-size: 14px;
+}
 
-  </style>
+.btn {
+  display: inline-block;
+  margin-top: 12px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  padding: 9px 14px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* ===== DARK MODE ===== */
+body.dark {
+  background: linear-gradient(180deg, #0f172a, #020617);
+  color: #e5e7eb;
+}
+
+body.dark .card {
+  background: rgba(30,41,59,0.9);
+}
+
+body.dark .subtitle {
+  color: #9ca3af;
+}
+
+/* ===== DESKTOP ===== */
+@media (min-width: 768px) {
+  .menu-btn {
+    display: none;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 230px;
+    height: 100%;
+    background: #1e3a55;
+    padding-top: 80px;
+    z-index: 1000; /* VERY IMPORTANT */
+  }
+
+
+  .content {
+    margin-left: 230px;
+    padding: 32px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+}
+
+</style>
 </head>
+
 <body>
-  <div class="wrapper">
-    <header>
-      <h1>Internship Tracker</h1>
-      <button id="dark-mode-toggle">🌙 Dark Mode</button>
-      <button id="login-btn" onclick="window.location.href='/login.html'">LOG IN</button>
-      <button onclick="window.location.href='/jobs'" style="padding: 10px 20px; font-size: 18px;">🔍 Search Jobs</button>
 
-
-    </header>
-
-    <!-- Dashboard Overview -->
-    <section>
-      <h2>Dashboard Overview</h2>
-      <div class="dashboard">
-        <div class="dashboard-card">
-          <h3>Total Applications</h3>
-          <p>12</p>
-        </div>
-        <div class="dashboard-card">
-          <h3>Interviews Scheduled</h3>
-          <p>3</p>
-        </div>
-        <div class="dashboard-card">
-          <h3>Offers Received</h3>
-          <p>1</p>
-        </div>
-        <div class="dashboard-card">
-          <h3>Rejections</h3>
-          <p>4</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Kanban Board -->
-    <section>
-      <h2>Kanban Board (Application Progress)</h2>
-      <div class="kanban">
-        <a href="applied" class="kanban-column">
-          <h4>Applied</h4>
-          <div class="placeholder">View all companies you've applied to</div>
-        </a>
-
-        <a href="interview" class="kanban-column">
-          <h4>Interview</h4>
-          <div class="placeholder">View all upcoming or past interviews</div>
-        </a>
-
-        <a href="offer" class="kanban-column">
-          <h4>Offer</h4>
-          <div class="placeholder">View offers and accepted positions</div>
-        </a>
-
-        <a href="rejected" class="kanban-column">
-          <h4>Rejected</h4>
-          <div class="placeholder">View declined or rejected applications</div>
-        </a>
-      </div>
-    </section>
-
-    <!-- Future Features -->
-    <section>
-      <h2>Analytics (Coming Soon)</h2>
-      <p>Charts and statistics about your applications will appear here.</p>
-    </section>
-
-    <section>
-      <h2>Notifications (Coming Soon)</h2>
-      <p>Stay updated with interview reminders and application deadlines.</p>
-    </section>
-
-    <section>
-      <h2>Profile & Settings (Coming Soon)</h2>
-      <p>Manage your profile and customize your preferences.</p>
-    </section>
-
-    <section>
-      <a href="notes.html"><h2>Notes (Coming Soon)</h2></a>
-      <p>Keep track of interview notes, recruiter names, and feedback.</p>
-    </section>
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    <img src="/logo1.png" alt="Logo">
   </div>
+  <div class="topbar-actions">
+    <button onclick="location.href='/jobs'">🔍 Jobs</button>
+    <button id="darkToggle">🌙</button>
+  </div>
+</div>
 
-  <script>
-    // Dark mode toggle
-    const toggleBtn = document.getElementById("dark-mode-toggle");
-    toggleBtn.addEventListener("click", () => {
-      document.body.classList.toggle("dark-mode");
-      toggleBtn.textContent = document.body.classList.contains("dark-mode")
-        ? "☀️ Light Mode"
-        : "🌙 Dark Mode";
-    });
-  </script>
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <a href="/">Dashboard</a>
+  <a href="/profile">Profile</a>
+  <a href="/addjob.html">Add Job</a>
+  <a href="/jobs">Job Listings</a>
+  <a href="/applied">Applied Jobs</a>
+  <a href="/interview">Interviews</a>
+  <a href="/offer">Offers</a>
+  <a href="/rejected">Rejected</a>
+  <a href="/notes">Notes</a>
+  <a href="/chatbot.html">AI Chatbot</a>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+  <h1>Welcome Back 👋</h1>
+  <p class="subtitle">Track your internship journey in one place.</p>
+
+  <div class="grid">
+    <div class="card"><h3>Profile</h3><p>Your personal details</p><a class="btn" href="/profile">View</a></div>
+    <div class="card"><h3>Add Job</h3><p>Manually track applications</p><a class="btn" href="/addjob.html">Add</a></div>
+    <div class="card"><h3>Applied</h3><p>Jobs you've applied for</p><a class="btn" href="/applied">View</a></div>
+    <div class="card"><h3>Interviews</h3><p>Upcoming & past interviews</p><a class="btn" href="/interview">View</a></div>
+    <div class="card"><h3>Offers</h3><p>Offers you’ve received</p><a class="btn" href="/offer">View</a></div>
+    <div class="card"><h3>Rejected</h3><p>Unsuccessful applications</p><a class="btn" href="/rejected">View</a></div>
+    <div class="card"><h3>Notes</h3><p>Your personal notes</p><a class="btn" href="/notes">Open</a></div>
+  </div>
+</div>
+
+<script>
+function toggleMenu() {
+  document.getElementById("sidebar").classList.toggle("show");
+}
+
+document.getElementById("darkToggle").onclick = () => {
+  document.body.classList.toggle("dark");
+};
+</script>
+
 </body>
 </html>
-

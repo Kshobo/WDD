@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Chatbot</title>
+<style>
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #f4f7fa;
+  color: #333;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.container {
+  margin-left: 260px; /* if using dashboard sidebar */
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.chat-box {
+  flex: 1;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 15px;
+  overflow-y: auto;
+  background: #fff;
+}
+.message {
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  max-width: 70%;
+}
+.user { background: #3b82f6; color: white; align-self: flex-end; }
+.bot { background: #e4e6eb; color: #333; align-self: flex-start; }
+.input-area {
+  display: flex;
+  margin-top: 15px;
+}
+input[type=text] {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+button {
+  padding: 10px 15px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+}
+button:hover { opacity: 0.9; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>AI Chatbot & FAQs</h1>
+  <div class="chat-box" id="chatBox"></div>
+  <div class="input-area">
+    <input type="text" id="userInput" placeholder="Type your message...">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+</div>
+
+<script>
+async function sendMessage() {
+  const input = document.getElementById("userInput");
+  const message = input.value.trim();
+  if (!message) return;
+
+  // Show user message
+  const chatBox = document.getElementById("chatBox");
+  const userDiv = document.createElement("div");
+  userDiv.className = "message user";
+  userDiv.textContent = message;
+  chatBox.appendChild(userDiv);
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  input.value = "";
+
+  // Send to backend
+  try {
+    const res = await fetch("/api/chatbot", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message })
+    });
+    const data = await res.json();
+
+    const botDiv = document.createElement("div");
+    botDiv.className = "message bot";
+    botDiv.textContent = data.reply;
+    chatBox.appendChild(botDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+  } catch (err) {
+    console.error(err);
+    const botDiv = document.createElement("div");
+    botDiv.className = "message bot";
+    botDiv.textContent = "Oops! Something went wrong.";
+    chatBox.appendChild(botDiv);
+  }
+}
+</script>
+
+</body>
+</html>
