@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<!-- 
+  Enables responsive scaling on mobile devices.
+  Critical for mobile-first UI.
+-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Job Listings</title>
+
+<style>
+/* ================= RESET ================= */
+/*
+  Removes browser inconsistencies and
+  ensures predictable layout behavior.
+*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ================= BODY ================= */
+/*
+  Background image with centered content.
+  Padding allows scrolling on small screens.
+*/
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-image: url("Images/background_1.jpg");
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  color: #333;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 30px 12px; /* Added horizontal padding for mobile */
+}
+
+/* ================= WRAPPER ================= */
+/*
+  White container improves contrast and readability.
+  Max-width prevents overly long lines on desktop.
+*/
+.wrapper {
+  width: 100%;
+  max-width: 1200px;
+  background-color: rgba(255, 255, 255, 0.92);
+  border-radius: 14px;
+  padding: 24px 30px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* ================= HEADING ================= */
+/*
+  Centered heading with strong visual hierarchy.
+*/
+h1 {
+  text-align: center;
+  margin-bottom: 22px;
+  font-size: clamp(1.6rem, 4vw, 2rem); /* Fluid typography */
+  color: #2c3e50;
+}
+
+/* ================= FILTERS ================= */
+/*
+  Filters are touch-friendly and stack on mobile.
+*/
+.filters {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+  flex-wrap: wrap; /* Allows wrapping on smaller screens */
+}
+
+/*
+  Inputs and selects use larger padding
+  for better mobile usability.
+*/
+.filters input,
+.filters select {
+  padding: 11px 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  min-width: 160px;
+}
+
+/*
+  Clear visual primary action for search.
+*/
+.filters button {
+  padding: 11px 22px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: 0.25s;
+}
+
+.filters button:hover {
+  transform: translateY(-1px);
+  opacity: 0.95;
+}
+
+/* ================= JOB LIST ================= */
+/*
+  Vertical list layout is easier to scan
+  than dense tables on mobile.
+*/
+.job-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ================= JOB CARD ================= */
+/*
+  Card layout improves separation and readability.
+  Hover animation adds polish without distraction.
+*/
+.job-card {
+  background-color: #f4f7fb;
+  padding: 22px;
+  border-radius: 14px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.job-card:hover {
+  transform: translateY(-3px);
+  background-color: #e8eef8;
+}
+
+/* ================= CARD TEXT ================= */
+.job-card h3 {
+  margin-bottom: 6px;
+  color: #2563eb;
+  font-size: 1.1rem;
+}
+
+.job-card p {
+  margin: 4px 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* ================= APPLY BUTTON ================= */
+/*
+  Full-width button on mobile improves tap accuracy.
+*/
+.job-card button {
+  margin-top: 12px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: 0.25s;
+}
+
+.job-card button:hover {
+  transform: translateY(-1px);
+  opacity: 0.95;
+}
+
+/* ================= MOBILE OPTIMIZATION ================= */
+/*
+  Ensures filters stack vertically on small screens
+  and content remains readable.
+*/
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filters input,
+  .filters select,
+  .filters button {
+    width: 100%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= MAIN WRAPPER ================= -->
+<div class="wrapper">
+  <!-- Back to Dashboard link -->
+  <a href="/" style="display:block; margin-bottom:15px; color:#2563eb; font-weight:500; text-decoration:none;">← Back to Dashboard</a>
+
+  <h1>Job Listings</h1>
+
+
+  <!-- ================= FILTER CONTROLS ================= -->
+  <!-- 
+    Search controls are grouped together
+    for clarity and ease of use.
+  -->
+  <div class="filters">
+    <input type="text" id="search-title" placeholder="Job title">
+
+    <select id="search-type">
+      <option value="">Any Type</option>
+      <option value="Full-time">Full-time</option>
+      <option value="Part-time">Part-time</option>
+    </select>
+
+    <select id="search-salary">
+      <option value="">Any Salary</option>
+      <option value="0-20000">€0 - €20,000</option>
+      <option value="20001-25000">€20,001 - €25,000</option>
+      <option value="25001-30000">€25,001 - €30,000</option>
+      <option value="30001-40000">€30,001 - €40,000</option>
+      <option value="40001-60000">€40,001 - €60,000</option>
+      <option value="60000">€60,001+</option>
+    </select>
+
+    <button onclick="searchJobs()">Search</button>
+  </div>
+
+  <!-- ================= JOB RESULTS ================= -->
+  <div class="job-list" id="job-list"></div>
+</div>
+
+<!-- ================= SCRIPT ================= -->
+<script>
+/*
+  Fetch jobs based on selected filters.
+  Keeps UI dynamic without page reload.
+*/
+async function searchJobs() {
+  const title = document.getElementById("search-title").value;
+  const type = document.getElementById("search-type").value;
+  const salaryRange = document.getElementById("search-salary").value;
+
+  let url = `/api/jobs/search?`;
+  if (title) url += `title=${encodeURIComponent(title)}&`;
+  if (type) url += `type=${encodeURIComponent(type)}&`;
+
+  if (salaryRange) {
+    const [min, max] = salaryRange.split('-');
+    if (min) url += `minSalary=${min}&`;
+    if (max) url += `maxSalary=${max}&`;
+  }
+
+  const res = await fetch(url);
+  const jobs = await res.json();
+
+  const jobList = document.getElementById("job-list");
+  jobList.innerHTML = '';
+
+  if (jobs.length === 0) {
+    jobList.innerHTML = '<p>No jobs found.</p>';
+    return;
+  }
+
+  jobs.forEach(job => {
+    const card = document.createElement('div');
+    card.className = 'job-card';
+    card.innerHTML = `
+      <h3>${job.title}</h3>
+      <p><strong>Company:</strong> ${job.company}</p>
+      <p><strong>Type:</strong> ${job.type}</p>
+      <p><strong>Location:</strong> ${job.location}</p>
+      <p><strong>Salary:</strong> ${job.salary ? '€' + job.salary : 'N/A'}</p>
+      <p><strong>Description:</strong> ${job.description}</p>
+      <button onclick="applyJob('${job._id}')">Apply</button>
+    `;
+    jobList.appendChild(card);
+  });
+}
+
+/*
+  Applies to a job via backend API.
+  Provides instant feedback to the user.
+*/
+async function applyJob(jobId) {
+  const res = await fetch(`/api/jobs/apply/${jobId}`, { method: 'POST' });
+  const data = await res.json();
+  alert(data.success ? 'Applied!' : data.message || data.error);
+}
+
+/* Load jobs when page first opens */
+searchJobs();
+</script>
+
+</body>
+</html>

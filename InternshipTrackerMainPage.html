@@ -1,0 +1,366 @@
+<!-- This is the main page for the internship tracker -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+
+<!-- 
+  Viewport ensures proper scaling on mobile devices.
+  Essential for mobile-first responsive design.
+-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Internship Dashboard</title>
+
+<style>
+/* 
+  Global reset ensures consistent spacing across devices
+  and prevents layout issues on small screens.
+*/
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* 
+  Mobile-first body styling with soft gradient for visual hierarchy.
+*/
+body {
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(180deg, #eef2f7, #f8fafc);
+  color: #1f2937;
+  overflow-x: hidden; /* Prevents horizontal scrolling on mobile */
+}
+
+/* ================= TOP BAR ================= */
+/*
+  Sticky top bar improves navigation accessibility on mobile,
+  keeping key actions always within reach.
+*/
+.topbar {
+  height: 64px;
+  background: rgba(37, 99, 235, 0.95);
+  backdrop-filter: blur(8px);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  position: sticky;
+  top: 0;
+  z-index: 3000;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 
+  Lazy loading improves performance on mobile networks.
+*/
+.topbar img {
+  height: 50px;
+}
+
+/*
+  Large hamburger button improves touch accuracy
+  (minimum 44px touch target).
+*/
+.menu-btn {
+  font-size: 26px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+/* 
+  Action buttons styled as pills for clear affordance on mobile.
+*/
+.topbar-actions button {
+  background: white;
+  color: #2563eb;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  margin-left: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.topbar-actions button:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+/* ================= SIDEBAR ================= */
+/*
+  Sidebar starts hidden off-canvas (mobile-first).
+  Slide-in navigation matches native mobile app UX.
+*/
+.sidebar {
+  position: fixed;
+  top: 64px;
+  left: -100%;
+  width: 230px;
+  height: calc(100% - 64px);
+  background: linear-gradient(180deg, #1e3a8a, #1e40af);
+  transition: left 0.3s ease;
+  padding-top: 12px;
+  z-index: 2000;
+}
+
+/*
+  When shown, sidebar slides into view.
+*/
+.sidebar.show {
+  left: 0;
+}
+
+/*
+  Clear, large tap targets for mobile navigation.
+*/
+.sidebar a {
+  display: block;
+  padding: 16px 20px;
+  color: #e5e7eb;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.sidebar a:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+/* ================= OVERLAY ================= */
+/*
+  Overlay prevents interaction with background content
+  when sidebar is open — improves focus and prevents mis-taps.
+*/
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 1500;
+  display: none;
+}
+
+.overlay.show {
+  display: block;
+}
+
+/* ================= CONTENT ================= */
+/*
+  Padding optimized for mobile readability.
+*/
+.content {
+  padding: 22px;
+}
+
+h1 {
+  font-size: clamp(22px, 6vw, 28px); /* Fluid typography */
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  color: #6b7280;
+  margin-bottom: 24px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ================= GRID ================= */
+/*
+  Mobile-first: single-column layout by default.
+*/
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+/* ================= CARD ================= */
+/*
+  Cards use glassmorphism for depth and hierarchy.
+  Entire card is touch-friendly.
+*/
+.card {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 26px; /* Larger padding for touch comfort */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+}
+
+/* 
+  Tap feedback for mobile devices.
+*/
+.card:active {
+  transform: scale(0.98);
+}
+
+.card h3 {
+  color: #2563eb;
+  margin-bottom: 6px;
+  font-size: 18px;
+}
+
+.card p {
+  color: #4b5563;
+  font-size: 14px;
+}
+
+/* 
+  Buttons designed for thumb interaction.
+*/
+.btn {
+  display: inline-block;
+  margin-top: 12px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  padding: 12px 18px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+/* ================= DARK MODE ================= */
+/*
+  Dark mode improves accessibility in low-light environments.
+*/
+body.dark {
+  background: linear-gradient(180deg, #0f172a, #020617);
+  color: #e5e7eb;
+}
+
+body.dark .card {
+  background: rgba(30,41,59,0.9);
+}
+
+body.dark .subtitle {
+  color: #9ca3af;
+}
+
+/* ================= TABLET ================= */
+/*
+  Tablet breakpoint introduces two-column layout.
+*/
+@media (min-width: 480px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ================= DESKTOP ================= */
+/*
+  Desktop uses persistent sidebar and adaptive grid.
+*/
+@media (min-width: 768px) {
+  .menu-btn {
+    display: none;
+  }
+
+  .sidebar {
+    left: 0;
+    top: 0;
+    height: 100%;
+    padding-top: 80px;
+  }
+
+  .overlay {
+    display: none !important;
+  }
+
+  .content {
+    margin-left: 230px;
+    padding: 32px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Overlay for mobile sidebar -->
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <div class="topbar-left">
+    <button class="menu-btn" onclick="toggleMenu()" aria-label="Open menu">☰</button>
+    <img src="/logo1.png" loading="lazy" alt="Logo">
+  </div>
+  <div class="topbar-actions">
+    <button onclick="location.href='/jobs'">🔍 Jobs</button>
+    <button id="darkToggle">🌙</button>
+  </div>
+</div>
+
+<!-- Sidebar -->
+<nav class="sidebar" id="sidebar" aria-label="Main Navigation">
+  <a href="/">Dashboard</a>
+  <a href="/profile">Profile</a>
+  <a href="/jobs">Job Listings</a>
+  <a href="/applied">Applied Jobs</a>
+  <a href="/interview">Interviews</a>
+  <a href="/offer">Offers</a>
+  <a href="/rejected">Rejected</a>
+  <a href="/notes">Notes</a>
+</nav>
+
+<!-- Content -->
+<div class="content">
+  <h1>Welcome Back 👋</h1>
+  <p class="subtitle">Track your internship journey in one place.</p>
+
+  <div class="grid">
+    <div class="card"><h3>Profile</h3><p>Your personal details</p><a class="btn" href="/profile">View</a></div>
+    <div class="card"><h3>Applied</h3><p>Jobs you've applied for</p><a class="btn" href="/applied">View</a></div>
+    <div class="card"><h3>Interviews</h3><p>Upcoming & past interviews</p><a class="btn" href="/interview">View</a></div>
+    <div class="card"><h3>Offers</h3><p>Offers you've received</p><a class="btn" href="/offer">View</a></div>
+    <div class="card"><h3>Rejected</h3><p>Unsuccessful applications</p><a class="btn" href="/rejected">View</a></div>
+    <div class="card"><h3>Notes</h3><p>Your personal notes</p><a class="btn" href="/notes">Open</a></div>
+  </div>
+</div>
+
+<script>
+/*
+  Toggles sidebar and overlay together.
+  Improves focus and prevents background interaction on mobile.
+*/
+function toggleMenu() {
+  document.getElementById("sidebar").classList.toggle("show");
+  document.getElementById("overlay").classList.toggle("show");
+}
+
+/*
+  Dark mode toggle with persistence.
+  Enhances user comfort and UX continuity.
+*/
+if (localStorage.getItem("dark")) {
+  document.body.classList.add("dark");
+}
+
+document.getElementById("darkToggle").onclick = () => {
+  document.body.classList.toggle("dark");
+  localStorage.setItem("dark", document.body.classList.contains("dark"));
+};
+</script>
+
+</body>
+</html>

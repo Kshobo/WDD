@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<!-- 
+  Viewport meta ensures correct scaling on mobile devices.
+  Critical for mobile-first responsive UX.
+-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Profile - Internship Tracker</title>
+
+<style>
+/* ================= BASE ================= */
+/*
+  Global reset ensures consistent spacing and sizing
+  across different screen sizes and browsers.
+*/
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+  Background gradient adds depth while remaining subtle.
+  Transition improves perceived smoothness for dark mode.
+*/
+body {
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  background: linear-gradient(180deg, #eef2f7, #f8fafc);
+  color: #1f2937;
+  transition: background 0.3s, color 0.3s;
+  overflow-x: hidden; /* Prevents horizontal scroll on mobile */
+}
+
+/* ================= TOPBAR ================= */
+/*
+  Sticky topbar keeps navigation always accessible,
+  especially important on mobile devices.
+*/
+.topbar {
+  height: 64px;
+  background: rgba(37, 99, 235, 0.95);
+  backdrop-filter: blur(8px);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/*
+  Hamburger button sized for touch accessibility
+  (minimum 44px recommended by mobile UX guidelines).
+*/
+.menu-btn {
+  font-size: 24px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.topbar-left img {
+  height: 56px;
+  width: auto;
+}
+
+/*
+  Action buttons styled as pill buttons
+  to clearly indicate tap targets.
+*/
+.topbar-actions button {
+  background: white;
+  color: #2563eb;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 999px;
+  margin-left: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.topbar-actions button:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+/* ================= SIDEBAR ================= */
+/*
+  Off-canvas sidebar is hidden by default on mobile.
+  This mirrors native mobile navigation patterns.
+*/
+.sidebar {
+  position: fixed;
+  top: 64px;
+  left: -100%;
+  width: 230px;
+  height: calc(100% - 64px);
+  background: #1E3A55;
+  padding-top: 12px;
+  transition: left 0.3s ease;
+  z-index: 900;
+}
+
+/*
+  When active, sidebar slides into view.
+*/
+.sidebar.show {
+  left: 0;
+}
+
+/*
+  Large tap areas improve usability on touch devices.
+*/
+.sidebar a {
+  display: block;
+  padding: 16px 20px;
+  color: #e5e7eb;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.sidebar a:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+/* ================= CONTENT ================= */
+/*
+  Padding optimized for readability on mobile screens.
+*/
+.content {
+  padding: 22px;
+  margin-top: 12px;
+}
+
+h1 {
+  font-size: clamp(22px, 5vw, 26px); /* Fluid typography */
+  margin-bottom: 16px;
+  color: #2563eb;
+}
+
+/* ================= PROFILE CARD ================= */
+/*
+  Centered card layout keeps focus on form content.
+  Glassmorphism adds visual depth without distraction.
+*/
+.profile-card {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 28px;
+  max-width: 500px;
+  margin: 0 auto;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+/*
+  Subtle hover lift adds feedback on desktop devices.
+*/
+.profile-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+}
+
+/*
+  Labels remain visible for accessibility and clarity.
+*/
+.profile-card label {
+  display: block;
+  margin-top: 14px;
+  font-weight: 500;
+}
+
+/*
+  Inputs styled for comfortable touch interaction.
+*/
+.profile-card input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  margin-top: 6px;
+  font-size: 1rem;
+}
+
+/*
+  Button spacing and size optimized for thumbs.
+*/
+.profile-card button {
+  margin-top: 16px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+/* Primary action visually emphasized */
+.save-btn {
+  background: #3b82f6;
+  color: white;
+}
+.save-btn:hover { background: #2563eb; }
+
+/* Secondary destructive actions clearly differentiated */
+.logout-btn {
+  background: #ef4444;
+  color: white;
+}
+.logout-btn:hover { background: #dc2626; }
+
+.delete-btn {
+  background: #f87171;
+  color: white;
+}
+.delete-btn:hover { background: #dc2626; }
+
+/* ================= DESKTOP ================= */
+/*
+  Desktop breakpoint shows sidebar permanently
+  and increases spacing for larger screens.
+*/
+@media (min-width: 768px) {
+  .sidebar {
+    left: 0;
+    top: 64px;
+    height: calc(100% - 64px);
+  }
+
+  .content {
+    margin-left: 230px;
+    padding: 32px;
+  }
+}
+
+/* ================= DARK MODE ================= */
+/*
+  Dark mode improves accessibility in low-light environments.
+*/
+body.dark {
+  background: linear-gradient(180deg, #0f172a, #020617);
+  color: #e5e7eb;
+}
+
+body.dark .profile-card {
+  background: rgba(30,41,59,0.9);
+}
+
+body.dark input {
+  background: #1f2937;
+  color: #e5e7eb;
+  border-color: #444;
+}
+
+body.dark .topbar {
+  background: rgba(30,30,30,0.95);
+}
+
+body.dark .topbar-actions button {
+  background: #2563eb;
+  color: white;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= TOPBAR ================= -->
+<div class="topbar">
+  <div class="topbar-left">
+    <button class="menu-btn" onclick="toggleMenu()" aria-label="Open menu">☰</button>
+    <img src="/logo1.png" alt="Logo">
+  </div>
+  <div class="topbar-actions">
+    <button onclick="location.href='/'">Dashboard</button>
+    <button onclick="location.href='/jobs'">Jobs</button>
+    <button id="darkToggle">🌙</button>
+  </div>
+</div>
+
+<!-- ================= SIDEBAR ================= -->
+<nav class="sidebar" id="sidebar" aria-label="Main navigation">
+  <a href="/">Dashboard</a>
+  <a href="/profile">Profile</a>
+  <a href="/jobs">Job Listings</a>
+  <a href="/applied">Applied Jobs</a>
+  <a href="/interview">Interviews</a>
+  <a href="/offer">Offers</a>
+  <a href="/rejected">Rejected</a>
+  <a href="/notes">Notes</a>
+</nav>
+
+<!-- ================= CONTENT ================= -->
+<div class="content">
+  <h1>Profile</h1>
+
+  <div class="profile-card">
+    <label for="name">Full Name</label>
+    <input id="name" type="text">
+
+    <label for="email">Email</label>
+    <input id="email" type="email">
+
+    <button class="save-btn" onclick="saveProfile()">Save Changes</button>
+    <button class="logout-btn" onclick="location.href='/logout'">Logout</button>
+    <button class="delete-btn" onclick="deleteAccount()">Delete Account</button>
+  </div>
+</div>
+
+<script>
+/*
+  Toggles sidebar visibility on mobile.
+  Improves navigation without consuming screen space.
+*/
+function toggleMenu() {
+  document.getElementById("sidebar").classList.toggle("show");
+}
+
+/*
+  Dark mode toggle improves comfort and accessibility.
+*/
+document.getElementById("darkToggle").onclick = () => {
+  document.body.classList.toggle("dark");
+};
+
+/*
+  Fetch profile data on page load.
+  Pre-filling forms reduces user effort and errors.
+*/
+fetch("/api/profile")
+  .then(res => res.json())
+  .then(user => {
+    document.getElementById("name").value = user.FullName;
+    document.getElementById("email").value = user.Email;
+  });
+
+/*
+  Saves profile updates with clear user feedback.
+*/
+function saveProfile() {
+  const updated = {
+    FullName: document.getElementById("name").value,
+    Email: document.getElementById("email").value
+  };
+
+  fetch("/api/profile/update", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updated)
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(data.success ? "Profile updated!" : "Error updating profile");
+  })
+  .catch(() => alert("Error updating profile"));
+}
+
+/*
+  Confirms destructive action to prevent accidental deletion.
+*/
+function deleteAccount() {
+  if (!confirm("Delete your account? This cannot be undone.")) return;
+
+  fetch("/api/profile/delete", { method: "DELETE" })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) window.location.href = "/signup";
+      else alert("Error deleting account.");
+    })
+    .catch(() => alert("Error deleting account"));
+}
+</script>
+
+</body>
+</html>

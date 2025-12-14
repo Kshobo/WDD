@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notes</title>
+<style>
+/* ===== BASE ===== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: url("Images/background_1.jpg") center/cover no-repeat fixed;
+  color: #1f2937;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* ===== TOP BAR ===== */
+.topbar {
+  height: 64px;
+  width: 100%;
+  background: rgba(37, 99, 235, 0.95);
+  backdrop-filter: blur(8px);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 18px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.topbar img { height: 60px; }
+
+.topbar .actions button {
+  background: white;
+  color: #2563eb;
+  border: none;
+  padding: 7px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: 0.2s;
+}
+.topbar .actions button:hover { transform: translateY(-1px); opacity: 0.9; }
+
+/* ===== WRAPPER ===== */
+.wrapper {
+  width: 90%;
+  max-width: 1000px;
+  margin: 30px auto;
+}
+
+/* ===== ADD NOTE SECTION ===== */
+.add-note {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.add-note textarea {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  resize: vertical;
+}
+
+.add-note button {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.add-note button:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* ===== NOTES GRID ===== */
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.note-card {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.note-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0,0,0,0.12); }
+
+.note-card p { margin-bottom: 12px; }
+.note-card .delete-btn {
+  background: #d9534f;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: 0.2s;
+}
+.note-card .delete-btn:hover { background: #b52b27; }
+
+/* ===== DARK MODE ===== */
+body.dark-mode {
+  background-color: #121212;
+  color: #f5f5f5;
+}
+body.dark-mode .note-card { background: rgba(30,30,30,0.9); }
+body.dark-mode .add-note textarea { background: #1e1e1e; color: #fff; border: 1px solid #555; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <a href="/"><img src="/logo1.png" alt="Logo"></a>
+  <div class="actions">
+    <button onclick="location.href='/profile'">Profile</button>
+    <button id="dark-mode-toggle">🌙</button>
+  </div>
+</div>
+
+<div class="wrapper">
+
+  <!-- Back to Dashboard link -->
+  <a href="/" class="back-dashboard">← Back to Dashboard</a>
+
+  <!-- ADD NOTE -->
+  <div class="add-note">
+    <textarea id="note-input" placeholder="Write a new note..."></textarea>
+    <button id="add-note-btn">Add Note</button>
+  </div>
+
+  <!-- NOTES GRID -->
+  <div class="notes-grid" id="notes-container"></div>
+</div>
+
+
+<script>
+// Dark Mode
+const toggleBtn = document.getElementById("dark-mode-toggle");
+toggleBtn.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+  toggleBtn.textContent = document.body.classList.contains("dark-mode")
+    ? "☀️ Light Mode"
+    : "🌙";
+});
+
+// Notes Logic (LocalStorage)
+const noteInput = document.getElementById("note-input");
+const notesContainer = document.getElementById("notes-container");
+const addBtn = document.getElementById("add-note-btn");
+
+function loadNotes() {
+  const notes = JSON.parse(localStorage.getItem("notes")) || [];
+  notesContainer.innerHTML = "";
+  notes.forEach((note, index) => {
+    const card = document.createElement("div");
+    card.className = "note-card";
+    card.innerHTML = `
+      <p>${note}</p>
+      <button class="delete-btn" onclick="deleteNote(${index})">Delete</button>
+    `;
+    notesContainer.appendChild(card);
+  });
+}
+
+function addNote() {
+  const text = noteInput.value.trim();
+  if(!text) return;
+  const notes = JSON.parse(localStorage.getItem("notes")) || [];
+  notes.push(text);
+  localStorage.setItem("notes", JSON.stringify(notes));
+  noteInput.value = "";
+  loadNotes();
+}
+
+function deleteNote(index) {
+  const notes = JSON.parse(localStorage.getItem("notes")) || [];
+  notes.splice(index, 1);
+  localStorage.setItem("notes", JSON.stringify(notes));
+  loadNotes();
+}
+
+addBtn.addEventListener("click", addNote);
+loadNotes();
+</script>
+</body>
+</html>
