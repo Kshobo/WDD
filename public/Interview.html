@@ -36,7 +36,7 @@ body {
 }
 
 .topbar img {
-  height: 40px;
+  height: 60px;
 }
 
 .topbar .actions button {
@@ -160,19 +160,19 @@ body.dark-mode tbody tr:hover {
 </head>
 <body>
 
-<!-- TOP BAR -->
+<!-- Top bar -->
 <div class="topbar">
-  <img src="/logo1.png" alt="Logo">
+    <a href="/"><img src="/logo1.png" alt="Logo"></a>
   <div class="actions">
     <button onclick="location.href='/profile'">Profile</button>
     <button id="dark-mode-toggle">🌙 Dark Mode</button>
   </div>
 </div>
 
-<!-- MAIN WRAPPER -->
+<!-- Main wrapper -->
 <div class="wrapper">
   <h1>Interview Stage</h1>
-
+  <!-- Displays the internships that you have an interview scheduled for-->
   <table>
     <thead>
       <tr>
@@ -209,6 +209,7 @@ body.dark-mode tbody tr:hover {
   </table>
 </div>
 
+<!-- Script for dark mode -->
 <script>
 const toggleBtn = document.getElementById("dark-mode-toggle");
 toggleBtn.addEventListener("click", () => {

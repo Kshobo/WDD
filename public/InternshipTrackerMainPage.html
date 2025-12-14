@@ -1,3 +1,4 @@
+<!-- This is the main page for the internship tracker -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +7,6 @@
 <title>Internship Dashboard</title>
 
 <style>
-/* ===== BASE ===== */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -217,7 +217,7 @@ body.dark .subtitle {
 
 <body>
 
-<!-- TOP BAR -->
+<!-- Top Bar -->
 <div class="topbar">
   <div class="topbar-left">
     <button class="menu-btn" onclick="toggleMenu()">☰</button>
@@ -229,41 +229,41 @@ body.dark .subtitle {
   </div>
 </div>
 
-<!-- SIDEBAR -->
+<!-- Sidebar -->
 <div class="sidebar" id="sidebar">
   <a href="/">Dashboard</a>
   <a href="/profile">Profile</a>
-  <a href="/addjob.html">Add Job</a>
   <a href="/jobs">Job Listings</a>
   <a href="/applied">Applied Jobs</a>
   <a href="/interview">Interviews</a>
   <a href="/offer">Offers</a>
   <a href="/rejected">Rejected</a>
   <a href="/notes">Notes</a>
-  <a href="/chatbot.html">AI Chatbot</a>
 </div>
 
-<!-- CONTENT -->
+<!-- Content-->
 <div class="content">
   <h1>Welcome Back 👋</h1>
   <p class="subtitle">Track your internship journey in one place.</p>
 
+  <!--Cards of app features-->
   <div class="grid">
     <div class="card"><h3>Profile</h3><p>Your personal details</p><a class="btn" href="/profile">View</a></div>
-    <div class="card"><h3>Add Job</h3><p>Manually track applications</p><a class="btn" href="/addjob.html">Add</a></div>
     <div class="card"><h3>Applied</h3><p>Jobs you've applied for</p><a class="btn" href="/applied">View</a></div>
     <div class="card"><h3>Interviews</h3><p>Upcoming & past interviews</p><a class="btn" href="/interview">View</a></div>
-    <div class="card"><h3>Offers</h3><p>Offers you’ve received</p><a class="btn" href="/offer">View</a></div>
+    <div class="card"><h3>Offers</h3><p>Offers you've received</p><a class="btn" href="/offer">View</a></div>
     <div class="card"><h3>Rejected</h3><p>Unsuccessful applications</p><a class="btn" href="/rejected">View</a></div>
     <div class="card"><h3>Notes</h3><p>Your personal notes</p><a class="btn" href="/notes">Open</a></div>
   </div>
 </div>
 
+
 <script>
+  // Toggles the side menu on and off
 function toggleMenu() {
   document.getElementById("sidebar").classList.toggle("show");
 }
-
+// Toggle for light and dark mode
 document.getElementById("darkToggle").onclick = () => {
   document.body.classList.toggle("dark");
 };

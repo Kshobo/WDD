@@ -71,7 +71,7 @@ body {
   left: -100%;
   width: 230px;
   height: calc(100% - 64px);
-  background: linear-gradient(180deg, #1e3a8a, #1e40af);
+  background:  #1E3A55;
   padding-top: 12px;
   transition: left 0.3s ease;
   z-index: 900;
@@ -192,14 +192,12 @@ body.dark .topbar-actions button { background: #2563eb; color: white; }
 <div class="sidebar" id="sidebar">
   <a href="/">Dashboard</a>
   <a href="/profile">Profile</a>
-  <a href="/addjob.html">Add Job</a>
   <a href="/jobs">Job Listings</a>
   <a href="/applied">Applied Jobs</a>
   <a href="/interview">Interviews</a>
   <a href="/offer">Offers</a>
   <a href="/rejected">Rejected</a>
   <a href="/notes">Notes</a>
-  <a href="/chatbot.html">AI Chatbot</a>
 </div>
 
 <!-- CONTENT -->
@@ -237,7 +235,7 @@ fetch("/api/profile")
   document.getElementById("email").value = user.Email;
 });
 
-// Save profile
+// Save updated profile information
 function saveProfile() {
   const updated = {
     FullName: document.getElementById("name").value,

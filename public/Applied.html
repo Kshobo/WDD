@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Applied Internships</title>
+  <!--Style (CSS) for Applied page -->
   <style>
     body {
       font-family: 'Segoe UI', Roboto, Arial, sans-serif;
@@ -92,6 +93,8 @@
     .status.Offer { background-color: #10b981; color: white; }
     .status.Rejected { background-color: #ef4444; color: white; }
 
+
+    /*Dark Mode styling*/
     @media (max-width: 768px) {
       .job-card {
         padding: 15px;
@@ -151,7 +154,7 @@
           container.innerHTML = '<p>You have not applied for any jobs yet.</p>';
           return;
         }
-
+        //Displays information about jobs that were applied for
         applications.forEach(app => {
           const job = app.jobId;
           const card = document.createElement('div');

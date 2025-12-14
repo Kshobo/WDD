@@ -24,6 +24,11 @@ app.use(session({
 app.use(express.json());
 
 
+
+// ---------------------------- Database Schemas ----------------------------
+
+
+
 // Creating the User schema for the database
 const userSchema = new mongoose.Schema({
     FullName: String,
@@ -46,16 +51,17 @@ const jobSchema = new mongoose.Schema({
 const Jobs = mongoose.model('Jobs', jobSchema);
 
 
-//This portion gets the InternshipTrackerMainPage.html file and sends it to the browser
+//This portion gets the InternshipTrackerMainPage.html file and sends it to the browseras the root page 
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'InternshipTrackerMainPage.html'))
 })
 
-//This portion gets the data from the form and saves it to the database
+//This code gets the data from the form and saves it to the database
 app.post('/post', async (req, res) => {
     const { FullName, Email, Password } = req.body;
 
-    const existingUser = await Users.findOne({ Email });
+    const existingUser = await Users.findOne({ Email });//Checks if entered email is already in the database
     if (existingUser) {
         return res.status(400).send('Email already exists.');
     }
@@ -76,72 +82,73 @@ app.post('/post', async (req, res) => {
     res.redirect('/profile');
 });
 
-app.get('/profile', async (req, res) => {
-    if (!req.session.userId) {
-        // User not logged in → redirect to sign-up page
-        return res.redirect('/signup');
-    }
-
-    // User is logged in → show profile info
-    const user = await Users.findById(req.session.userId);
-    res.sendFile(path.join(__dirname, 'public', 'profile.html'));
-
-});
-
 
 
 // ---------------------------- Application Status Pages ----------------------------
 
 
 
-
-app.get('/Offer', (req, res) => {
+app.get('/profile', async (req, res) => {
     if (!req.session.userId) {
-        return res.redirect('/signup'); // or '/login' if you have one
+        return res.redirect('/signup');//Redirects users to create account page if they are not logged in 
+    }
+    // User is logged in → show profile info
+    const user = await Users.findById(req.session.userId);
+    res.sendFile(path.join(__dirname, 'public', 'profile.html'));
+
+});
+
+app.get('/Offer', (req, res) => { // Takes you to the offer page
+    if (!req.session.userId) {
+        return res.redirect('/signup'); 
     }
     res.sendFile(path.join(__dirname, 'public', 'offer.html'));
 });
 
-app.get('/Rejected', (req, res) => {
+app.get('/Rejected', (req, res) => { // Takes you to the rejected page
     if (!req.session.userId) {
-        return res.redirect('/signup'); // or '/login' if you have one
+        return res.redirect('/signup'); 
     }
     res.sendFile(path.join(__dirname, 'public', 'rejected.html'));
 });
 
-app.get('/Interview', (req, res) => {
+app.get('/Interview', (req, res) => { // Takes you to the interview page
     if (!req.session.userId) {
-        return res.redirect('/signup'); // or '/login' if you have one
+        return res.redirect('/signup'); 
     }
     res.sendFile(path.join(__dirname, 'public', 'interview.html'));
 });
 
-app.get('/Applied', (req, res) => {
+app.get('/Applied', (req, res) => { // Takes you to the applies page
     if (!req.session.userId) {
-        return res.redirect('/signup'); // or '/login' if you have one
+        return res.redirect('/signup'); 
     }
     res.sendFile(path.join(__dirname, 'public', 'applied.html'));
 });
 
 
-app.get('/Notes', (req, res) => {
+app.get('/Notes', (req, res) => { // Takes you to the notes page
     res.sendFile(path.join(__dirname, 'public', 'notes.html'));
 })
 
-
-app.get('/api/profile', async (req, res) => {
+app.get('/api/profile', async (req, res) => { // Takes you to the profile page when you click 
     if (!req.session.userId) return res.status(401).json({ error: "Unauthorized" });
 
     const user = await Users.findById(req.session.userId).lean();
     res.json(user);
 });
 
+app.get('/signup', (req, res) => { // Takes you to the create account page
+    res.sendFile(path.join(__dirname, 'public', 'CreateAccount.html'));
+});
 
 
-// ---------------------------- Profile Log Out,Update and Delete Section ----------------------------
+
+// ---------------------------- Profile Logout, Update, and Delete Section ----------------------------
 
 
 
+// Update user profile
 app.put('/api/profile/update', async (req, res) => {
     if (!req.session.userId) return res.status(401).json({ error: "Unauthorized" });
 
@@ -153,9 +160,10 @@ app.put('/api/profile/update', async (req, res) => {
         { new: true } // returns updated document
     );
 
-    res.json({ success: true, user: updatedUser });
+    res.json({ success: true, user: updatedUser }); // 
 });
 
+// Delete user account
 app.delete('/api/profile/delete', async (req, res) => {
   if (!req.session.userId) return res.status(401).json({ error: "Unauthorized" });
 
@@ -174,10 +182,7 @@ app.delete('/api/profile/delete', async (req, res) => {
   }
 });
 
-app.get('/signup', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'CreateAccount.html'));
-});
-
+//Logs user in by checking email and password against database
 app.post('/login', async (req, res) => {
     const { Email, Password } = req.body;
 
@@ -204,6 +209,7 @@ app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'Login.html'));
 });
 
+// Logs user out
 app.get('/logout', (req, res) => {
   req.session.destroy(err => {
     if (err) {
@@ -214,6 +220,11 @@ app.get('/logout', (req, res) => {
     res.redirect('/login'); // redirect to login page
   });
 });
+
+
+
+// ---------------------------- Notes Section ----------------------------
+
 
 
 app.listen(port, () => {
@@ -246,7 +257,7 @@ app.get('/api/applications', async (req, res) => {
   }
 
   try {
-    // Find all applications by this user and populate job details
+    // Find all applications by the user and populate job details
     const applications = await Applications.find({ userId: req.session.userId })
       .populate('jobId')  // fetch job details
       .sort({ appliedAt: -1 });
@@ -280,7 +291,7 @@ const applicationSchema = new mongoose.Schema({
 const Applications = mongoose.model('Applications', applicationSchema);
 
 
-// ---- UPDATED SEARCH ROUTE TO INCLUDE SALARY FILTER ----
+// Searches for jobs based on the filters applied 
 app.get('/api/jobs/search', async (req, res) => {
     try {
         const { title, company, location, type, minSalary, maxSalary } = req.query;
@@ -308,8 +319,7 @@ app.get('/api/jobs/search', async (req, res) => {
 });
 
 
-
-
+// Applying to a job and saving the application in the database 
 app.post('/api/jobs/apply/:jobId', async (req, res) => {
     if (!req.session.userId) {
         return res.status(401).json({ error: "You must be logged in." });

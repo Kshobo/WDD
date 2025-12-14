@@ -122,15 +122,17 @@
 
 <div class="wrapper">
   <h1>Job Listings</h1>
-
+    
+  <!-- Filter by Job type -->
   <div class="filters">
-    <input type="text" id="search-title" placeholder="Job title or company">
+    <input type="text" id="search-title" placeholder="Job title">
     <select id="search-type">
       <option value="">Any Type</option>
       <option value="Full-time">Full-time</option>
       <option value="Part-time">Part-time</option>
     </select>
 
+    <!-- Filter by salary -->
     <select id="search-salary">
       <option value="">Any Salary</option>
       <option value="0-20000">€0 - €20,000</option>
@@ -147,6 +149,8 @@
   <div class="job-list" id="job-list"></div>
 </div>
 
+
+<!-- Script for handling job search -->
 <script>
   async function searchJobs() {
     const title = document.getElementById("search-title").value;
